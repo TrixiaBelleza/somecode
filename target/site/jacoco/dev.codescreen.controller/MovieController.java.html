@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MovieController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CodeScreen_wxo0ofib</a> &gt; <a href="index.source.html" class="el_package">dev.codescreen.controller</a> &gt; <span class="el_source">MovieController.java</span></div><h1>MovieController.java</h1><pre class="source lang-java linenums">package dev.codescreen.controller;
+
+import dev.codescreen.model.MediaObject;
+import dev.codescreen.service.MovieDbService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/movies&quot;)
+public class MovieController {
+    private final MovieDbService movieDbService;
+
+    @Autowired
+<span class="fc" id="L17">    public MovieController(MovieDbService movieDbService) {</span>
+<span class="fc" id="L18">        this.movieDbService = movieDbService;</span>
+<span class="fc" id="L19">    }</span>
+
+    /**
+     * When provided a query parameter of a title, a movie search against the movie database will be returned.
+     * @param title title of the movie to search
+     * @return the list of movies - max length of 10
+     */
+    @GetMapping
+    public List&lt;MediaObject&gt; searchMovies(@RequestParam(required = false) String title) {
+<span class="pc bpc" id="L28" title="2 of 4 branches missed.">        if (title != null &amp;&amp; !title.isEmpty()) {</span>
+<span class="fc" id="L29">            List&lt;MediaObject&gt; movies = movieDbService.searchMovies(title);</span>
+
+            // Limit the result array to 10 items
+<span class="fc" id="L32">            int endIndex = Math.min(movies.size(), 10);</span>
+<span class="fc" id="L33">            return movies.subList(0, endIndex);</span>
+        } else {
+<span class="nc" id="L35">            return Collections.emptyList();</span>
+        }
+    }
+
+    /**
+     * When provided a path parameter of id, a query for a specific movie in the movie database will be returned.
+     * @param id path parameter id of the specific movie
+     * @return the movie that matches with the id provided.
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    public MediaObject getMovieById(@PathVariable int id) {
+<span class="fc" id="L46">        return movieDbService.getMovieById(id);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
